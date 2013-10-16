@@ -3,6 +3,8 @@ inspect = require('util').inspect
 Imap = require('imap')
 _ = require('lodash')._
 StringDecoder = require('string_decoder').StringDecoder
+MailParser = require("mailparser").MailParser
+
 
 THEADER = 'HEADER.FIELDS (FROM TO SUBJECT DATE)'
 TTEXT = "TEXT"
@@ -71,39 +73,48 @@ module.exports = class Gmail extends require( "./basic" )
 	_fetch: ( from, to, cb )=>
 		_ret = []
 
-		_seq = @client.seq.fetch( "#{ from }:#{ to }", { bodies: [ THEADER, TTEXT, "MIME" ] } )
+		_seq = @client.seq.fetch( "#{ from }:#{ to }", { bodies: '' } )
 		@debug "fetch:fetch", _seq
 		_seq.on "message", ( msg, seqno )=>
-			@debug "fetch:message", msg, seqno
-			_retMsg = 
-				body: null
-				attrs: {}
+			@info "fetch:message", msg, seqno
+			idx = seqno - 1
+			_ret[ idx ] = {}
+			_parsed = false
 
 			msg.on "body", ( stream, info )=>
-				_str = new StringDecoder( "utf8" )
-				@debug "msg:body", stream, info
-				_body = ""
-				stream.on "data", ( chunk )=>
-					_body = _str.write( chunk )
+				_mailParser = new MailParser()
+				_mailParser.on "end", ( mail )=>
+					@debug "msg:parsed", mail
+					_parsed = true
+
+					_ret[ idx ] = @extend _ret[ idx ], 
+						text: mail.text
+						html: mail.html
+						subject: mail.subject
+						from: mail.from
+						to: mail.to
+						attachments: mail.attachments 
+					msg.emit "parsed"
+					console.log "PARSED"
 					return
-				stream.once "end", =>
-					if info.which is THEADER
-						_bodyP = Imap.parseHeader( _body )
-						for _k, _v of _bodyP
-							_retMsg[ _k ] = if _.isArray( _v ) and _v.length is 1 then _v[ 0 ] else _v
-					else
-						#_bodyP = Imap.Parser.parseBodyStructure( _body )
-						@info "msg:parsed", _body.split(/--.*\r\n/ig)
-					
-					return
+				stream.pipe( _mailParser )
 				return
+
 			msg.once "attributes", ( attrs )=>
-				_retMsg.attrs = attrs
+				_ret[ idx ].attributes = attrs
 				return
 
 			msg.once "end", =>
-				_ret.push _retMsg
+				console.log "ONEND", _parsed
+				if _parsed
+					console.log "END"
+				else
+					msg.once "parsed", =>
+						console.log "END"
+						return
 				return
+
+			return
 
 		_err = false
 		_seq.once "error", ( err )=>
@@ -113,7 +124,9 @@ module.exports = class Gmail extends require( "./basic" )
 			return
 
 		_seq.once "end", =>
+			console.log "FINAL"
 			cb( null, _ret ) if not _err
+
 			@client.end()
 			return
 		return

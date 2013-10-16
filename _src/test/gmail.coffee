@@ -18,8 +18,8 @@ describe "GMAIL connection", ->
 
 	it "fetch inbox", ( done )=>
 		mailObj.fetch 1, 10, ( err, res )=>
-			console.log err, JSON.stringify( res )
 			throw err if err
+			console.log res
 			done()
 			return
 		return
