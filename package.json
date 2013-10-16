@@ -1,0 +1,38 @@
+{
+	"name": "gmail-s3-diary",
+	"description": "Generate a diary in s3 out of gmail mails",
+	"version": "0.0.1",
+	"author": "M. Peter <mpneuried@googlemail.com>",
+	"engines": {
+		"node": "> 0.8.10"
+	},
+	"scripts": {
+		"test": "mocha ./test/gmail.js"
+	},
+	"main": "index",
+	"dependencies": {
+		"imap": "*",
+		"mailparser": "*",
+		"aws-sdk": "*",
+		"lodash": "*",
+		"cli": "*",
+		"colors": "*",
+		"extend": "*"
+	},
+	"devDependencies": {
+		"mocha": "*",
+		"should": "*",
+		"async": "*",
+
+		"grunt": "0.4.x",
+		"grunt-contrib-coffee": "*",
+		"grunt-regarde": "*",
+		"grunt-include-replace": "*"
+	},
+	"keywords": [],
+	"repository" : {
+		"type": "git",
+		"url": "http://github.com/mpneuried/gmail-s3-diary.git"
+	}
+
+}
