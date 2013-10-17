@@ -27,7 +27,10 @@
 		"grunt": "0.4.x",
 		"grunt-contrib-coffee": "*",
 		"grunt-regarde": "*",
-		"grunt-include-replace": "*"
+		"grunt-include-replace": "*",
+		"grunt-contrib-stylus": "*",
+		"grunt-contrib-jade": "*",
+		"grunt-contrib-copy": "*"
 	},
 	"keywords": [],
 	"repository" : {

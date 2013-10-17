@@ -12,6 +12,7 @@
 /node_modules
 /lib
 /test
+/_template
 config.json
 /*.js
 *.sublime*
