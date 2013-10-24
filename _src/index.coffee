@@ -1,4 +1,5 @@
 exports.version = '@@version'
 
-exports.Worker = require './lib/worker'
-exports.Client = require './lib/client'
+exports.Gmail = require './lib/gmail'
+
+module.exports = new ( require( './lib/run' ) )()

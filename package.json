@@ -15,6 +15,7 @@
 		"mailparser": "*",
 		"aws-sdk": "*",
 		"lodash": "*",
+		"knox": "*",
 		"cli": "*",
 		"colors": "*",
 		"extend": "*"
