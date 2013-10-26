@@ -1,15 +1,22 @@
-module.exports = class JSONAes extends require( "./basic" )
+ncjsaes = require('node-cryptojs-aes')
+CryptoJS = ncjsaes.CryptoJS
 
-	parseJSON: ( password, str )=>
-		return JSON.parse( @decrypt( password, str ) )
+module.exports = ( conf )->
+	return new (class JSONAes extends require( "./basic" )
 
-	stringify: ( password, data )=>
-		return @encrypt( password, JSON.stringify( data ) )
+		parse: ( password, str )=>
+			return JSON.parse( @decrypt( password, str ) )
 
-	decrypt: ( password, str )=>
-		_decrypted = str
-		return _decrypted
+		stringify: ( password, data )=>
+			return @encrypt( password, JSON.stringify( data ) )
 
-	encrypt: ( password, str )=>
-		_encrypted = str
-		return _encrypted		
+		decrypt: ( password, str )=>
+			_decrypted = CryptoJS.enc.Utf8.stringify( CryptoJS.AES.decrypt(str, password) )
+			#_decrypted = str
+			return _decrypted
+
+		encrypt: ( password, str )=>
+			_encrypted = CryptoJS.AES.encrypt(str, password)
+
+			return _encrypted.toString()
+	)( conf )	

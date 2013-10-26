@@ -51,6 +51,8 @@ module.exports = class JsonDB extends Basic
 	constructor: ( collection = [], options = {} )->
 		super( options )
 
+		@getter "length", ( ->@models.length )
+
 		@idx = {}
 		@models = []
 

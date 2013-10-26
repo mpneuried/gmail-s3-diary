@@ -7,18 +7,20 @@
 		"node": "> 0.8.10"
 	},
 	"scripts": {
-		"test": "mocha ./test/gmail.js"
+		"test": "mocha ./test/json-aes.js"
 	},
 	"main": "index",
 	"dependencies": {
 		"imap": "*",
 		"mailparser": "*",
-		"aws-sdk": "*",
 		"lodash": "*",
 		"knox": "*",
 		"cli": "*",
 		"colors": "*",
-		"extend": "*"
+		"extend": "*",
+		"async": "*",
+		"mime": "*",
+		"node-cryptojs-aes": "*"
 	},
 	"devDependencies": {
 		"mocha": "*",
