@@ -5,6 +5,7 @@ mime = require('mime')
 async = require('async')
 _ = require('lodash')._
 knox = require( "knox" )
+exifparser = require('exif-parser')
 StringDecoder = require('string_decoder').StringDecoder;
 
 JsonDB = require( "./jsondb" )
@@ -18,7 +19,7 @@ module.exports = class Runner extends require( "./basic" )
 		return @extend true, super,
 			dbPath: "/data.txt"
 			password: "abc"
-			allowedSenders: [ "mpneuried@googlemail.com" ]
+			allowedSenders: []
 			gmail:
 				user: null
 				password: null
@@ -32,7 +33,6 @@ module.exports = class Runner extends require( "./basic" )
 		@openMails = 0
 		@on( "configured", @loadDB )
 		@on( "loaded", @start )
-		@on( "mail:new", @increaseMailCount )
 		@on( "mail:new", @newMail )
 		@on( "mail:done", @checkDone )
 		@on( "upload:done", @saveDB )
@@ -66,6 +66,7 @@ module.exports = class Runner extends require( "./basic" )
 			if err
 				@error( null, "could not load db", @config.dbPath, err )
 				return
+
 			decoder = new StringDecoder('utf8')
 			_str = ""
 
@@ -73,7 +74,7 @@ module.exports = class Runner extends require( "./basic" )
 				_str = decoder.write( chunk )
 				return
 			res.on "end", =>
-				if _str.length
+				if _str.length and res.statusCode is 200
 					_data = JSONAes.parse( @config.password, _str )
 				
 				_default = 
@@ -129,6 +130,7 @@ module.exports = class Runner extends require( "./basic" )
 			return false
 
 	newMail: ( mail )=>
+		@openMails++
 		process.nextTick =>
 			console.log "Process Mail \"#{ mail.subject }\" with #{ mail.attachments?.length or 0 } attachments."
 
@@ -139,10 +141,21 @@ module.exports = class Runner extends require( "./basic" )
 				do ( attmnt )=>
 
 					fName = "/files/" + attmnt.checksum + "." + mime.extension( attmnt.contentType )
-					@db.files.add
+					_data = 
 						id: attmnt.checksum
 						filename: fName
 						mime: attmnt.contentType
+						created: mail.attributes.date.getTime()
+
+					if attmnt.contentType in [ "image/jpeg" ]
+						_parser = exifparser.create( attmnt.content )
+						_exif = _parser.parse()
+						if _exif?.tags?.DateTimeOriginal?
+							_data.created = _exif.tags.DateTimeOriginal * 1000
+							_data.gps_lat = _exif.tags.GPSLatitude
+							_data.gps_lon = _exif.tags.GPSLongitude
+
+					@db.files.add _data
 
 					_fileIds.push attmnt.checksum
 					aFns.push ( cba )=>
@@ -170,9 +183,6 @@ module.exports = class Runner extends require( "./basic" )
 				return
 			return
 		return
-
-	increaseMailCount: =>
-		@openMails++
 
 	checkDone: =>
 		@openMails--

@@ -7,14 +7,17 @@ module.exports = (grunt) ->
 			coffee:
 				files: ["_src/**/*.coffee"]
 				tasks: [ "coffee:changed", "includereplace" ]
+			templatecoffee:
+				files: ["_src_template/**/*.coffee"]
+				tasks: [ "coffee:changedtemplate", "includereplace" ]
 			jade:
-				files: ["_src/**/*.jade"]
+				files: ["_src_template/**/*.jade"]
 				tasks: [ "jade" ]
 			stylus:
-				files: ["_src/**/*.styl"]
+				files: ["_src_template/**/*.styl"]
 				tasks: [ "stylus" ]
 			static:
-				files: ["_src/_template/static/**/*.*"]
+				files: ["_src_template/static/**/*.*"]
 				tasks: [ "copy:static" ]
 		coffee:
 			changed:
@@ -26,11 +29,27 @@ module.exports = (grunt) ->
 				dest: ''
 				ext: '.js'
 
+			changedtemplate:
+				expand: true
+				cwd: '_src_template'
+				src:	[ '<% print( _.first( ((typeof grunt !== "undefined" && grunt !== null ? (_ref = grunt.regarde) != null ? _ref.changed : void 0 : void 0) || ["_src_template/nothing"]) ).slice( "_src_template/".length ) ) %>' ]
+				# template to cut off `_src_template/` and throw on error on non-regrade call
+				# CF: `_.first( grunt?.regarde?.changed or [ "_src_template/nothing" ] ).slice( "_src_template/".length )
+				dest: '_template'
+				ext: '.js'
+
 			base:
 				expand: true
 				cwd: '_src',
-				src: ["**/*.coffee"]
+				src: ["lib/**/*.coffee", "test/**/*.coffee", "*.coffee"]
 				dest: ''
+				ext: '.js'
+
+			gui:
+				expand: true
+				cwd: '_src_template',
+				src: ["js/**/*.coffee"]
+				dest: '_template/'
 				ext: '.js'
 
 		jade: 
@@ -40,14 +59,14 @@ module.exports = (grunt) ->
 					pretty: true
 
 				files: 
-					"_template/index.html": "_src/_template/index.jade"
+					"_template/index.html": "_src_template/index.jade"
 
 		stylus:
 			options:
 				"include css": true
 			styles:
 				files:
-					"_template/css/styles.css": ["_src/_template/css/_main.styl"]
+					"_template/css/styles.css": ["_src_template/css/_main.styl"]
 		
 		includereplace:
 			pckg:
@@ -64,7 +83,7 @@ module.exports = (grunt) ->
 		copy:
 			static:
 				expand: true
-				cwd: '_src/_template/static/',
+				cwd: '_src_template/static/',
 				src: [ "**" ]
 				dest: "_template"
 
