@@ -1,4 +1,4 @@
-define [ "jquery", "eventemitter", "tmpl" ], ( $, EventEmitter, Tmpls )->
+define [ "jquery", "lib/eventemitter", "tmpl" ], ( $, EventEmitter, Tmpls )->
 
 	return class Start extends EventEmitter
 
@@ -13,5 +13,11 @@ define [ "jquery", "eventemitter", "tmpl" ], ( $, EventEmitter, Tmpls )->
 			return
 
 		render: ( data )=>
+			data.meta = 
+				title: "Max Mustermann"
+				subtitle: "* 12.03.2004"
+				startdate: 1079064360000
+				copyright: "Heinz Müller"
+
 			$( "body" ).html( Tmpls.main( data ) )
 			return

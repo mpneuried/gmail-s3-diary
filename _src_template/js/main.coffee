@@ -5,7 +5,7 @@ require.config
 		underscore: "vendor/underscore"
 		moment: "vendor/moment"
 		moment_de: "vendor/moment_langs/de"
-		marionette: "vendor/backbone.marionette.min"
+		marionette: "vendor/backbone.marionette"
 		jade: "vendor/jaderuntime"
 		cryptojs: "vendor/aes"
 		tmpl: "tmpl"
@@ -16,7 +16,7 @@ require.config
 		moment:
 			exports: "moment"
 		backbone:
-			deps: [ "underscore" ]
+			deps: [ "underscore", "jquery" ]
 			exports: "Backbone"
 		marionette: 
 			deps: [ "underscore", "backbone" ]
@@ -28,12 +28,9 @@ require.config
 		cryptojs:
 			exports: "CryptoJS"
 
-require [ "crypted", "start" ], ( Crypted, Start )->
+require [ "crypted", "app", "posts/app" ], ( Crypted, App )->
 
 	$ ->
 		_crypted = new Crypted()
-		_crypted.on "decrypt", ( data )=>
-			new Start( data )
-			return
-		return
+		App.start()
 	return

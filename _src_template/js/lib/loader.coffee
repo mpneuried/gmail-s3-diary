@@ -1,9 +1,9 @@
 define [ "jquery", "eventemitter", "utils", "jsonaes" ], ( $, EventEmitter, utils, JSONAes )->
 
-	return class Loader extends EventEmitter
+	return new ( class Loader extends EventEmitter
 		constructor: ->
 			super
-			$.get "/data.txt?r#{ utils.randomString( 10 ) }", @raw
+			$.get "/data.txt", @raw
 			return
 
 		raw: ( @raw )=>
@@ -12,9 +12,12 @@ define [ "jquery", "eventemitter", "utils", "jsonaes" ], ( $, EventEmitter, util
 
 		decrypt: ( password )=>
 			try
-				@emit "data", JSONAes.parse( password, @raw )
+				@data = JSONAes.parse( password, @raw )
+				@emit "data", @data
 			catch _err
+				console.log _err
 				if _err.message is "Malformed UTF-8 data"
 					@emit "wrongpw"
 				else
 					throw _err
+		)()

@@ -28,6 +28,7 @@ module.exports = class Runner extends require( "./basic" )
 				key: null
 				secret: null
 				bucket: null
+			meta: {}
 
 	initialize: =>
 		@openMails = 0
@@ -75,6 +76,7 @@ module.exports = class Runner extends require( "./basic" )
 				return
 			res.on "end", =>
 				if _str.length and res.statusCode is 200
+					console.log "decrypt with `#{@config.password}`"
 					_data = JSONAes.parse( @config.password, _str )
 				
 				_default = 
@@ -95,7 +97,9 @@ module.exports = class Runner extends require( "./basic" )
 		_db = {}
 		for _n, coll of @db
 			_db[ _n ] = coll.toJSON()
+		_db.meta = @config.meta
 
+		console.log "encrypt with `#{@config.password}`"
 		_crypred = JSONAes.stringify( @config.password, _db )
 		dataBuffer = new Buffer( _crypred )
 

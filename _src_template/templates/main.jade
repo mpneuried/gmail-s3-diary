@@ -1,13 +1,9 @@
-.topribbon
-	img( src="img/topribbon.png" )
-.jumbotron
-	block head
-.ribbon
-	span
+header
+	h1= meta.title
+	h3= meta.subtitle
 
-.container-narrow
-	block content
+section.container#container
 
-	for post in posts
-		.post
-			
+footer
+	&copy; 
+	=meta.copyright

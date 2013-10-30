@@ -1,16 +1,15 @@
-.container
-	form.form-decrypt( action="#", method="GET" )			
-		h3.lead Tagebuch
-		input.form-control( name="password", type="password", placeholder="Passwort" )
+form.form-decrypt( action="#", method="GET" )			
+	h3.lead Tagebuch
+	input.form-control( name="password", type="password", placeholder="Passwort" )
 
-		label.form-control
-			input( name="store", type="checkbox" )
-			span Passwort speichern
+	label.form-control
+		input( name="store", type="checkbox" )
+		span Passwort speichern
 
-		//- Error output
-		if error
-			.alert.alert-warning
-				strong Fehlerhaftes Passwort.<br>
-				| Bitte versuchen Sie es erneut.
+	//- Error output
+	if error
+		.alert.alert-warning
+			strong Fehlerhaftes Passwort.<br>
+			| Bitte versuchen Sie es erneut.
 
-		button.btn.btn-lg.btn-primary.btn-block( type="submit" ) Entschlüsseln
+	button.btn.btn-lg.btn-primary.btn-block( type="submit" ) Entschlüsseln

@@ -1,11 +1,10 @@
-define [ "jquery", "loader", "localstore", "eventemitter", "tmpl" ], ( $, Loader, localStore, EventEmitter, Tmpls )->
-	class App extends EventEmitter
+define [ "jquery", "lib/loader", "lib/localstore", "lib/eventemitter", "tmpl" ], ( $, loader, localStore, EventEmitter, Tmpls )->
+	class Crypted extends EventEmitter
 		constructor: ->
 			super
-			@loader = new Loader()
-			@loader.on "loaded", @checkStorage
-			@loader.on "wrongpw", @wrongPassword
-			@loader.on "data", @start
+			loader.on "loaded", @checkStorage
+			loader.on "wrongpw", @wrongPassword
+			loader.on "data", @start
 			$("body").on "submit", ".form-decrypt", ( evnt )=>
 				evnt.stopPropagation()
 				evnt.preventDefault()
@@ -39,9 +38,9 @@ define [ "jquery", "loader", "localstore", "eventemitter", "tmpl" ], ( $, Loader
 		wrongPassword: =>
 			@ask4Password( error: "invalid" )
 			return
-			
+
 		decrypt: ( pw )=>
-			@loader.decrypt( pw )
+			loader.decrypt( pw )
 			return
 
 		# _processData: ( data )=>

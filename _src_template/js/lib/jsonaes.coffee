@@ -15,6 +15,6 @@ define [ "cryptojs" ], ( CryptoJS )->
 
 		encrypt: ( password, str )=>
 			_encrypted = CryptoJS.AES.encrypt(str, password)
-
 			return _encrypted.toString()
+
 	return new JSONAes()
