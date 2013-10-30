@@ -9,21 +9,6 @@ html(lang="de")
 		meta( name="viewport", content="initial-scale=1, maximum-scale=1" )
 		meta( name="apple-mobile-web-app-capable", content="yes" )
 		link( href="css/styles.css", rel="stylesheet" )
-		script( src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js" )
-		script.
-			if( typeof jQuery == 'undefined' ){
-				document.write( unescape("%3Cscript src='/js/jquery-2.0.3.js?' type='text/javascript'%3E%3C/script%3E") );
-			}
-
-		script( src="js/aes.js" )
-		script( src="js/start.js" )
+		script( src="/js/vendor/require.js?v1", data-main="/js/main.js?v1" )
 	body
-		.topribbon
-			img( src="img/topribbon.png" )
-		.jumbotron
-			block head
-		.ribbon
-			span
-
-		.container-narrow
-			block content
+		

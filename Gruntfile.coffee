@@ -61,6 +61,21 @@ module.exports = (grunt) ->
 				files: 
 					"_template/index.html": "_src_template/index.jade"
 
+			frontend:
+				options:
+					debug: false
+					client: true
+					namespace: "Tmpls"
+					compileDebug: false
+					pretty: true
+					amd: true
+					processName: ( filename )->
+						_l = "_src_template/templates/".length
+						return filename[ _l.. ].replace( ".jade", "" )
+
+				files: 
+					"_template/js/tmpl.js": "_src_template/templates/*.jade"
+
 		stylus:
 			options:
 				"include css": true
