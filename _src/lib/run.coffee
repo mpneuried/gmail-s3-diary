@@ -105,6 +105,11 @@ module.exports = class Runner extends require( "./basic" )
 
 		headers =
 			'Content-Type': 'text/plain'
+			"x-amz-acl": "public-read"
+			"Access-Control-Allow-Origin": "*"
+			"Access-Control-Allow-Methods": "POST, GET, OPTIONS"
+			"Access-Control-Allow-Headers": "X-SOMETHING"
+			"Access-Control-Max-Age": 1728000
 		@knox.putBuffer dataBuffer, @config.dbPath, headers, ( err, res )=>
 			throw err if err
 			console.log "DB Saved"
@@ -143,21 +148,24 @@ module.exports = class Runner extends require( "./basic" )
 
 			for attmnt in mail.attachments
 				do ( attmnt )=>
-
-					fName = "/files/" + attmnt.checksum + "." + mime.extension( attmnt.contentType )
+					fName = "/files/" + attmnt.checksum + "." + _.last( attmnt.fileName.split( "." ) ).toLowerCase()
 					_data = 
 						id: attmnt.checksum
 						filename: fName
 						mime: attmnt.contentType
 						created: mail.attributes.date.getTime()
+						postid: mail.msgid
 
 					if attmnt.contentType in [ "image/jpeg" ]
 						_parser = exifparser.create( attmnt.content )
 						_exif = _parser.parse()
+						
 						if _exif?.tags?.DateTimeOriginal?
 							_data.created = _exif.tags.DateTimeOriginal * 1000
 							_data.gps_lat = _exif.tags.GPSLatitude
 							_data.gps_lon = _exif.tags.GPSLongitude
+							_data.height = _exif.imageSize.height
+							_data.width = _exif.imageSize.width
 
 					@db.files.add _data
 
@@ -165,6 +173,8 @@ module.exports = class Runner extends require( "./basic" )
 					aFns.push ( cba )=>
 						headers = 
 							"Content-Type": attmnt.contentType
+							"x-amz-acl": "public-read"
+							"Cache-control": "max-age=2592000"
 						
 						@knox.putBuffer( attmnt.content, fName, headers, cba )
 					return

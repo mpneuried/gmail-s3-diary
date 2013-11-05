@@ -5,8 +5,9 @@ require.config
 		underscore: "vendor/underscore"
 		moment: "vendor/moment"
 		moment_de: "vendor/moment_langs/de"
-		marionette: "vendor/backbone.marionette"
 		jade: "vendor/jaderuntime"
+		marionette: "vendor/backbone.marionette"
+		masonry: "vendor/masonry.pkgd"
 		cryptojs: "vendor/aes"
 		tmpl: "tmpl"
 	urlArgs: "v1"
@@ -16,7 +17,7 @@ require.config
 		moment:
 			exports: "moment"
 		backbone:
-			deps: [ "underscore", "jquery" ]
+			deps: [ "underscore", "masonry" ]
 			exports: "Backbone"
 		marionette: 
 			deps: [ "underscore", "backbone" ]
@@ -27,9 +28,12 @@ require.config
 			deps: [ "jade" ]
 		cryptojs:
 			exports: "CryptoJS"
+		masonry: 
+			deps: [ "jquery" ]
 
 require [ "crypted", "app", "posts/app" ], ( Crypted, App )->
-
+	window.photopath = "https://piapeter13.s3.amazonaws.com"
+	#window.photopath = ""
 	$ ->
 		_crypted = new Crypted()
 		App.start()

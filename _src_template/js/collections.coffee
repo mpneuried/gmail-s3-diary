@@ -27,9 +27,9 @@ define [ "backbone", "lib/loader" ], ( Backbone, loader )->
 			_a = a.get( "created" )
 			_b = b.get( "created" )
 			if _a > _b
-				return 1
-			else if _a < _b
 				return -1
+			else if _a < _b
+				return 1
 			else
 				return 0
 
@@ -39,9 +39,9 @@ define [ "backbone", "lib/loader" ], ( Backbone, loader )->
 			_a = a.get( "created" )
 			_b = b.get( "created" )
 			if _a > _b
-				return 1
-			else if _a < _b
 				return -1
+			else if _a < _b
+				return 1
 			else
 				return 0
 
@@ -51,10 +51,9 @@ define [ "backbone", "lib/loader" ], ( Backbone, loader )->
 		meta: new Model()
 
 	loader.on "data", ( data )=>
-		console.log data
 		collections.meta.set( data.meta )
-		collections.files.reset( data.files )
 		collections.posts.reset( data.posts )
+		collections.files.reset( data.files )
 		return
 
 	return collections

@@ -2,9 +2,11 @@ define [ "jquery", "lib/loader", "lib/localstore", "lib/eventemitter", "tmpl" ],
 	class Crypted extends EventEmitter
 		constructor: ->
 			super
+			loader.load()
 			loader.on "loaded", @checkStorage
 			loader.on "wrongpw", @wrongPassword
 			loader.on "data", @start
+			
 			$("body").on "submit", ".form-decrypt", ( evnt )=>
 				evnt.stopPropagation()
 				evnt.preventDefault()

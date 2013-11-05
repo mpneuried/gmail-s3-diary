@@ -4,18 +4,17 @@ define [ "marionette", "lib/modulecontroller", "app", "collections", "posts/view
 
 		config: 
 			list: 
-				event: "posts:list"
+				event: "files:list"
 				route: ""
 
 		list: =>
-			console.log App
-			if collections.posts.length
-				_lView = new viewPostsList( collection: collections.posts )
+			if collections.files.length
+				_lView = new viewPostsList( collection: collections.files )
 				App.content.show( _lView )
 				@navigate( "list" )
 			else
-				collections.posts.on "reset", =>
-					_lView = new viewPostsList( collection: collections.posts )
+				collections.files.on "reset", =>
+					_lView = new viewPostsList( collection: collections.files )
 					App.content.show( _lView )
 					@navigate( "list" )
 					return

@@ -1,5 +1,6 @@
 define [ "cryptojs" ], ( CryptoJS )->
-	class JSONAes
+	console.log "JSONAES"
+	JSONAes = 
 		parse: ( password, str )=>
 			_str = @decrypt( password, str )
 			return JSON.parse( _str )
@@ -8,7 +9,8 @@ define [ "cryptojs" ], ( CryptoJS )->
 			return @encrypt( password, JSON.stringify( data ) )
 
 		decrypt: ( password, str )=>
-			_decrypt = CryptoJS.AES.decrypt(str.replace( /\r|\n/ ), password)
+			alert( str )
+			_decrypt = CryptoJS.AES.decrypt(str, password)
 			_decrypted = CryptoJS.enc.Utf8.stringify( _decrypt )
 			#_decrypted = str
 			return _decrypted
@@ -17,4 +19,4 @@ define [ "cryptojs" ], ( CryptoJS )->
 			_encrypted = CryptoJS.AES.encrypt(str, password)
 			return _encrypted.toString()
 
-	return new JSONAes()
+	return JSONAes

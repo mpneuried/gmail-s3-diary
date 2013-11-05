@@ -4,18 +4,17 @@ define [ "marionette", "router", "tmpl", "collections" ], ( marionette, Router, 
 
 	app.addRegions
 		main: "#main"
-		content: "#container"
+		content: "#content"
 
 	class Layout extends Marionette.Layout
 		template: Tmpls.main
 		serializeData: =>
-			console.log 
 			return collections.meta.toJSON()
 
 	layout = new Layout()
-	#collections.meta.on "change", =>
-	#	app.main.show( layout )
-	#	return
+	collections.meta.on "change", =>
+		app.main.show( layout )
+		return
 
 	app.router = new Router()
 	
