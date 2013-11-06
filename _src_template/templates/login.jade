@@ -2,9 +2,11 @@ form.form-decrypt( action="#", method="GET" )
 	h3.lead Tagebuch
 	input.form-control( name="password", type="password", placeholder="Passwort" )
 
-	label.form-control
-		input( name="store", type="checkbox" )
-		span Passwort speichern
+	.checkbox
+		label
+			input( name="store", type="checkbox" )
+			span Sicherer Computer
+		span.help-block Dabei wird das Passwort dauerhaft auf diesem Computer gespeichert
 
 	//- Error output
 	if error

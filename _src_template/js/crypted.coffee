@@ -1,5 +1,5 @@
 define [ "jquery", "lib/loader", "lib/localstore", "lib/eventemitter", "tmpl" ], ( $, loader, localStore, EventEmitter, Tmpls )->
-	class Crypted extends EventEmitter
+	return class Crypted extends EventEmitter
 		constructor: ->
 			super
 			loader.load()
@@ -26,7 +26,7 @@ define [ "jquery", "lib/loader", "lib/localstore", "lib/eventemitter", "tmpl" ],
 			return
 
 		ask4Password: ( data )=>
-			$( "body" ).html( Tmpls.login( data ) )
+			$( "#main" ).html( Tmpls.login( data ) )
 			#_pw = prompt( "Passwort:" )
 			return
 

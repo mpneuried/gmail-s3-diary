@@ -1,17 +1,18 @@
-if( _old && _date )
-	.ribbon
-		span.old= _old
-		span.date= _date
+.file
+	if( _old && _date )
+		.ribbon
+			span.old= _old
+			span.date= _date
 
-.image
-	case mime
-		when "image/jpeg"
-			img( width="100%", src=filename )
-		when "video/quicktime"
-			video( controls )
-				source( src=filename )
-	.caption
-		.caption-inner
-			h3= post.subject
-			if( post.text.length )
-				p.content= post.text
+	.image
+		case mime
+			when "image/jpeg"
+				img( width="100%", src=filename )
+			when "video/quicktime"
+				video( controls )
+					source( src=filename )
+		.caption
+			.caption-inner
+				h3= post.subject
+				if( post.text.length )
+					p.content= post.text

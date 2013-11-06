@@ -1,9 +1,10 @@
-define [ "jquery", "eventemitter" ], ( $, EventEmitter )->
+define [], ->
 
 	return class EventEmitter
 		constructor: ->
 			@events = {}
-
+			return
+			
 		emit: (event, args...) ->
 			return false unless @events[event]
 			listener args... for listener in @events[event]
