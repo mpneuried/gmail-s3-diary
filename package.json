@@ -1,7 +1,7 @@
 {
 	"name": "gmail-s3-diary",
 	"description": "Generate a diary in s3 out of gmail mails",
-	"version": "0.0.1",
+	"version": "0.1.4",
 	"author": "M. Peter <mpneuried@googlemail.com>",
 	"engines": {
 		"node": "> 0.8.10"
@@ -34,7 +34,8 @@
 		"grunt-include-replace": "*",
 		"grunt-contrib-stylus": "*",
 		"grunt-contrib-jade": "*",
-		"grunt-contrib-copy": "*"
+		"grunt-contrib-copy": "*",
+		"grunt-aws-s3": "*"
 	},
 	"keywords": [],
 	"repository" : {

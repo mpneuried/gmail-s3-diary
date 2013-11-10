@@ -1,4 +1,4 @@
-define [ "jquery", "eventemitter", "cryptojs", "lib/utils" ], ( $, EventEmitter, CryptoJS, utils )->
+define [ "jquery", "lib/eventemitter", "cryptojs", "lib/utils" ], ( $, EventEmitter, CryptoJS, utils )->
 
 	JSONAes = 
 		parse: ( password, str )=>

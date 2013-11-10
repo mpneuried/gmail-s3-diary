@@ -1,4 +1,4 @@
-.file
+.file( id=id, style="background-image:url(" + filename + ")" )
 	if( _old && _date )
 		.ribbon
 			span.old= _old
@@ -6,13 +6,11 @@
 
 	.image
 		case mime
-			when "image/jpeg"
-				img( width="100%", src=filename )
 			when "video/quicktime"
 				video( controls )
 					source( src=filename )
-		.caption
-			.caption-inner
-				h3= post.subject
-				if( post.text.length )
-					p.content= post.text
+	.caption
+		.caption-inner
+			h3= post.subject
+			if( post.text.length )
+				p.content= post.text

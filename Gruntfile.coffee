@@ -1,8 +1,9 @@
 module.exports = (grunt) ->
-
+	_config = grunt.file.readJSON('config.json')
 	# Project configuration.
 	grunt.initConfig
 		pkg: grunt.file.readJSON('package.json')
+		aws: _config.aws
 		regarde:
 			coffee:
 				files: ["_src/**/*.coffee"]
@@ -93,7 +94,7 @@ module.exports = (grunt) ->
 					suffix: ''
 
 				files:
-					"": ["index.js"]
+					"": ["index.js", "_template/js/main.js", "_template/js/tmpl.js", "_template/index.html"]
 
 		copy:
 			static:
@@ -102,6 +103,20 @@ module.exports = (grunt) ->
 				src: [ "**" ]
 				dest: "_template"
 
+		aws_s3:
+			options:
+				accessKeyId: '<%= aws.key %>'
+				secretAccessKey: '<%= aws.secret %>'
+				bucket: '<%= aws.bucket %>'
+				region: 'eu-west-1'
+				access: 'public-read'
+				params:
+					"CacheControl": "max-age=630720000, public",
+			template: 
+				files: [
+					 { expand: true, cwd: '_template/', src: ['**'], dest: ''}
+				]
+
 	# Load npm modules
 	grunt.loadNpmTasks "grunt-regarde"
 	grunt.loadNpmTasks "grunt-contrib-coffee"
@@ -109,6 +124,7 @@ module.exports = (grunt) ->
 	grunt.loadNpmTasks "grunt-contrib-jade"
 	grunt.loadNpmTasks "grunt-contrib-stylus"
 	grunt.loadNpmTasks "grunt-contrib-copy"
+	grunt.loadNpmTasks('grunt-aws-s3')
 
 
 	# just a hack until this issue has been fixed: https://github.com/yeoman/grunt-regarde/issues/3
@@ -117,6 +133,7 @@ module.exports = (grunt) ->
 	# ALIAS TASKS
 	grunt.registerTask "watch", "regarde"
 	grunt.registerTask "default", "build"
+	grunt.registerTask "deploytemplate", ["build", "aws_s3:template"]
 
 	# build the project
 	grunt.registerTask "build", [ "coffee", "stylus", "jade", "copy", "includereplace" ]	
