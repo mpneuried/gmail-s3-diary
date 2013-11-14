@@ -8,12 +8,12 @@ define [ "jquery", "lib/eventemitter", "tmpl", "jhammer", "moment", "moment_de" 
 			@currentFull = null
 			_body = $( "body" )
 
-			_body.on "click", @hitKey
-			_body.delegate( ".file", "mousedown", @toggleFullView )
+			_body.on "keydown", @hitKey
+			#_body.delegate( ".file", "mousedown", @toggleFullView )
 
 
 			_hammer = _body.hammer()
-			#_hammer.on( "tap", ".file", @toggleFullView )
+			_hammer.on( "tap", ".file", @toggleFullView )
 			_hammer.on( "swipeleft", ".file", @nextImg )
 			_hammer.on( "swipeup", ".file", @nextImg )
 			_hammer.on( "swiperight", ".file", @prevImg )
@@ -105,11 +105,13 @@ define [ "jquery", "lib/eventemitter", "tmpl", "jhammer", "moment", "moment_de" 
 				@closeImg()
 			return
 
-		nextImg: =>
+		nextImg: ( event )=>
+			event?.gesture?.preventDefault()
 			@changeImg( 1 )
 			return
 
-		prevImg: =>
+		prevImg: ( event )=>
+			event?.gesture?.preventDefault()
 			@changeImg( -1 )
 			return
 

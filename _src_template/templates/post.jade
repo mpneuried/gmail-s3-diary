@@ -7,7 +7,7 @@
 	.image
 		case mime
 			when "video/quicktime"
-				video( controls )
+				video( controls, preload="none" )
 					source( src=filename )
 	.caption
 		.caption-inner
