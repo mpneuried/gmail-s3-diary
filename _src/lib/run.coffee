@@ -184,10 +184,11 @@ module.exports = class Runner extends require( "./basic" )
 					throw err
 					return
 				#console.log results
+				_txt = mail.text.replace( "Von meinem iPhone gesendet", "" )
 				@db.posts.add
 					id: mail.msgid
 					date: mail.attributes.date.getTime()
-					text: mail.text
+					text: @trim( _txt )
 					html: mail.html
 					subject: mail.subject
 					sender: mail.from
@@ -197,6 +198,9 @@ module.exports = class Runner extends require( "./basic" )
 				return
 			return
 		return
+	
+	trim: ( str )->
+		return str.replace(/^\s+|\s+$/g, '')
 
 	checkDone: =>
 		@openMails--

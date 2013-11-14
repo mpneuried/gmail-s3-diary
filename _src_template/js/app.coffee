@@ -1,4 +1,4 @@
-define [ "jquery", "lib/eventemitter", "tmpl", "hammer", "moment", "moment_de" ], ( $, EventEmitter, Tmpls, moment )->
+define [ "jquery", "lib/eventemitter", "tmpl", "jhammer", "moment", "moment_de" ], ( $, EventEmitter, Tmpls, Hammer, moment )->
 
 	class App extends EventEmitter
 		constructor: ->
@@ -8,16 +8,16 @@ define [ "jquery", "lib/eventemitter", "tmpl", "hammer", "moment", "moment_de" ]
 			@currentFull = null
 			_body = $( "body" )
 
-			_body.on "keydown", @hitKey
-			_body.delegate( ".file", "click", @toggleFullView )
+			_body.on "click", @hitKey
+			_body.delegate( ".file", "mousedown", @toggleFullView )
 
 
-			_main = Hammer(window.document.body)
-			_main.on( "touch", ".file", @toggleFullView )
-			#_main.on( "swipeleft", ".file", @prevImg )
-			#_main.on( "swipeup", ".file", @prevImg )
-			#_main.on( "swiperight", ".file", @nextImg )
-			#_main.on( "swipedown", ".file", @nextImg )
+			_hammer = _body.hammer()
+			#_hammer.on( "tap", ".file", @toggleFullView )
+			_hammer.on( "swipeleft", ".file", @nextImg )
+			_hammer.on( "swipeup", ".file", @nextImg )
+			_hammer.on( "swiperight", ".file", @prevImg )
+			_hammer.on( "swipedown", ".file", @prevImg )
 			return
 
 		data: ( data )=>
@@ -57,7 +57,11 @@ define [ "jquery", "lib/eventemitter", "tmpl", "hammer", "moment", "moment_de" ]
 
 		serializeData: ( file )=>
 			file.post = null
-			file.filename = window.photopath + file.filename
+			switch file.mime
+				when "image/jpeg"
+					file.filename = window.photopath + file.filename + ( window.photopostfix or "" )
+				else
+					file.filename = window.datapath + file.filename
 			post = @getPost( file.postid )
 			 
 			if post?

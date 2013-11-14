@@ -21,7 +21,7 @@ define [ "jquery", "lib/eventemitter", "cryptojs", "lib/utils" ], ( $, EventEmit
 
 	class Loader extends EventEmitter
 		load: =>
-			$.get window.photopath + "/data.txt?#{ utils.randomString( 10 ) }", @raw
+			$.get ( window.datapath or window.photopath ) + "/data.txt?#{ utils.randomString( 10 ) }", @raw
 			return
 
 		raw: ( @raw )=>

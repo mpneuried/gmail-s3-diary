@@ -110,11 +110,17 @@ module.exports = (grunt) ->
 				bucket: '<%= aws.bucket %>'
 				region: 'eu-west-1'
 				access: 'public-read'
-				params:
-					"CacheControl": "max-age=630720000, public",
+				
 			template: 
+				options:
+					params:
+						"CacheControl": "max-age=630720000, public"
 				files: [
-					 { expand: true, cwd: '_template/', src: ['**'], dest: ''}
+					 { expand: true, cwd: '_template/', src: ['**', '!index.html'], dest: ''}
+				]
+			indexhtml: 
+				files: [
+					 { expand: true, cwd: '_template/', src: ['index.html'], dest: ''}
 				]
 
 	# Load npm modules
@@ -133,7 +139,7 @@ module.exports = (grunt) ->
 	# ALIAS TASKS
 	grunt.registerTask "watch", "regarde"
 	grunt.registerTask "default", "build"
-	grunt.registerTask "deploytemplate", ["build", "aws_s3:template"]
+	grunt.registerTask "deploytemplate", ["build", "aws_s3:template", "aws_s3:indexhtml"]
 
 	# build the project
 	grunt.registerTask "build", [ "coffee", "stylus", "jade", "copy", "includereplace" ]	

@@ -7,6 +7,7 @@ require.config
 		jade: "vendor/jaderuntime"
 		cryptojs: "vendor/aes"
 		hammer: "vendor/hammer"
+		jhammer: "vendor/jquery.hammer"
 		tmpl: "tmpl"
 	urlArgs: "v@@version"
 	shim:
@@ -23,8 +24,11 @@ require.config
 		cryptojs:
 			exports: "CryptoJS"
 
+
 require [ "crypted", "app" ], ( Crypted, App )->
-	window.photopath = "https://piapeter13.s3.amazonaws.com"
+	window.datapath = "https://piapeter13.s3.amazonaws.com"
+	window.photopath = "http://cdn.milon.com/image/piapeter13.s3.amazonaws.com"
+	window.photopostfix = "=s800"
 	#window.photopath = ""
 	$ ->
 		_crypted = new Crypted()
