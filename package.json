@@ -1,7 +1,7 @@
 {
 	"name": "gmail-s3-diary",
 	"description": "Generate a diary in s3 out of gmail mails",
-	"version": "0.1.9",
+	"version": "0.1.10",
 	"author": "M. Peter <mpneuried@googlemail.com>",
 	"engines": {
 		"node": "> 0.8.10"
@@ -20,7 +20,7 @@
 		"extend": "*",
 		"async": "*",
 		"mime": "*",
-		"exif-parser": "*",
+		"moment": "*",
 		"node-cryptojs-aes": "*"
 	},
 	"devDependencies": {

@@ -11,7 +11,9 @@ module.exports = ( conf )->
 			return @encrypt( password, JSON.stringify( data ) )
 
 		decrypt: ( password, str )=>
-			_decrypted = CryptoJS.enc.Utf8.stringify( CryptoJS.AES.decrypt(str, password) )
+			console.log str
+			_decrypt = CryptoJS.AES.decrypt(str, password)
+			_decrypted = CryptoJS.enc.Utf8.stringify( _decrypt )
 			#_decrypted = str
 			return _decrypted
 

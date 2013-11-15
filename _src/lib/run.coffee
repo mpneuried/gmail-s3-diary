@@ -5,8 +5,8 @@ mime = require('mime')
 async = require('async')
 _ = require('lodash')._
 knox = require( "knox" )
-exifparser = require('exif-parser')
-StringDecoder = require('string_decoder').StringDecoder;
+moment = require( "moment" )
+exif = require('./exif')
 
 JsonDB = require( "./jsondb" )
 Gmail = require "./gmail"
@@ -68,12 +68,12 @@ module.exports = class Runner extends require( "./basic" )
 				@error( null, "could not load db", @config.dbPath, err )
 				return
 
-			decoder = new StringDecoder('utf8')
 			_str = ""
 
 			res.on "data", ( chunk )->
-				_str = decoder.write( chunk )
+				_str += chunk
 				return
+
 			res.on "end", =>
 				if _str.length and res.statusCode is 200
 					console.log "decrypt with `#{@config.password}`"
@@ -138,10 +138,60 @@ module.exports = class Runner extends require( "./basic" )
 		else 
 			return false
 
+
+	processFile: ( data, buffer, cb )=>
+		console.log "Process File: \"#{ data.id }\" of mime \"#{ data.mime }\"."
+		exif buffer, ( err, exif )=>
+			if err
+				cb( err )
+				return
+			
+			
+			data.height = exif.ImageHeight
+			data.width = exif.ImageWidth
+			data.rotation = exif.Rotation
+
+
+			switch exif.FileType
+				when "MOV"
+					data.compressor = exif.CompressorName
+					data.duration = exif.Duration
+					data.created = moment( exif[ "CreateDate-deu" ], "YYYY:MM:DD HH:mm:ssZ" ).valueOf()
+				when "JPEG"
+					data.created = moment( exif.CreateDate + " +0200", "YYYY:MM:DD HH:mm:ss Z" ).valueOf()
+					
+			console.log "Exif Data: \"#{ data.id }\":#{ exif.FileType } created \"#{ new Date( data.created ) }\" ( #{exif.CreateDate} )."
+
+			cb( null, data, buffer )
+			return
+		return
+
+	uploadFile: ( fName, data, attmnt )=>
+
+		return ( cb )=>
+			@processFile data, attmnt.content, ( err, data, file )=>
+				if err
+					cb( err )
+					return
+
+				@db.files.add data
+
+				headers = 
+					"Content-Type": attmnt.contentType
+					"x-amz-acl": "public-read"
+					"Cache-control": "max-age=2592000"
+				
+				cb( null )
+				return
+				console.log "Upload File: id: \"#{ data.id }\" with mime \"#{ data.mime }\"."
+				@knox.putBuffer( file, fName, headers, cb )
+				return
+			return
+
 	newMail: ( mail )=>
 		@openMails++
 		process.nextTick =>
-			console.log "Process Mail \"#{ mail.subject }\" with #{ mail.attachments?.length or 0 } attachments."
+			console.log "Process Mail: \"#{ mail.subject }\" with #{ mail.attachments?.length or 0 } attachments."
 
 			_fileIds = []
 			aFns = []
@@ -156,27 +206,8 @@ module.exports = class Runner extends require( "./basic" )
 						created: mail.attributes.date.getTime()
 						postid: mail.msgid
 
-					if attmnt.contentType in [ "image/jpeg" ]
-						_parser = exifparser.create( attmnt.content )
-						_exif = _parser.parse()
-						
-						if _exif?.tags?.DateTimeOriginal?
-							_data.created = _exif.tags.DateTimeOriginal * 1000
-							_data.gps_lat = _exif.tags.GPSLatitude
-							_data.gps_lon = _exif.tags.GPSLongitude
-							_data.height = _exif.imageSize.height
-							_data.width = _exif.imageSize.width
-
-					@db.files.add _data
-
 					_fileIds.push attmnt.checksum
-					aFns.push ( cba )=>
-						headers = 
-							"Content-Type": attmnt.contentType
-							"x-amz-acl": "public-read"
-							"Cache-control": "max-age=2592000"
-						
-						@knox.putBuffer( attmnt.content, fName, headers, cba )
+					aFns.push @uploadFile( fName, _data, attmnt )
 					return
 
 			async.parallel aFns, ( err, results )=>

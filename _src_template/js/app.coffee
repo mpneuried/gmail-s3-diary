@@ -86,14 +86,19 @@ define [ "jquery", "lib/eventemitter", "tmpl", "jhammer", "moment", "moment_de" 
 		toggleFullView: ( event )=>
 			if @currentFull? and event.target.tagName is "VIDEO"
 				return
-
+			_files = $( ".files" )
 			_el = $( event.currentTarget )
 			if not _el.hasClass( "fullview" )
+				@scrollTop = $( document ).scrollTop()
 				@currentFull = _el.attr( "id" )
 				_el.addClass( "fullview" )
+				_files.addClass( "openfullview" )
 			else
 				@currentFull = null
 				_el.removeClass( "fullview" )
+				_files.removeClass( "openfullview" )
+				$( document ).scrollTop( @scrollTop ) if @scrollTop?
+				@scrollTop = null
 			return
 
 		hitKey: ( event )=>
