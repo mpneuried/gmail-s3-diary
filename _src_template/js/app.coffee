@@ -14,6 +14,7 @@ define [ "jquery", "lib/eventemitter", "tmpl", "jhammer", "moment", "moment_de" 
 
 			_hammer = _body.hammer()
 			_hammer.on( "tap", ".file", @toggleFullView )
+			#_hammer.on( "tap", ".file", @closeFullView )
 			_hammer.on( "swipeleft", ".file", @nextImg )
 			_hammer.on( "swipeup", ".file", @nextImg )
 			_hammer.on( "swiperight", ".file", @prevImg )

@@ -181,8 +181,8 @@ module.exports = class Runner extends require( "./basic" )
 					"x-amz-acl": "public-read"
 					"Cache-control": "max-age=2592000"
 				
-				cb( null )
-				return
+				#cb( null )
+				#return
 				console.log "Upload File: id: \"#{ data.id }\" with mime \"#{ data.mime }\"."
 				@knox.putBuffer( file, fName, headers, cb )
 				return
@@ -210,7 +210,7 @@ module.exports = class Runner extends require( "./basic" )
 					aFns.push @uploadFile( fName, _data, attmnt )
 					return
 
-			async.parallel aFns, ( err, results )=>
+			async.series aFns, ( err, results )=>
 				if err
 					throw err
 					return
